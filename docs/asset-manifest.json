@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/static/css/main.333a2211.chunk.css",
-    "main.js": "/static/js/main.a6a474df.chunk.js",
-    "main.js.map": "/static/js/main.a6a474df.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.659fe3a9.js",
-    "runtime-main.js.map": "/static/js/runtime-main.659fe3a9.js.map",
-    "static/js/2.5c0deabf.chunk.js": "/static/js/2.5c0deabf.chunk.js",
-    "static/js/2.5c0deabf.chunk.js.map": "/static/js/2.5c0deabf.chunk.js.map",
-    "static/js/3.08fb5f8b.chunk.js": "/static/js/3.08fb5f8b.chunk.js",
-    "static/js/3.08fb5f8b.chunk.js.map": "/static/js/3.08fb5f8b.chunk.js.map",
-    "index.html": "/index.html",
-    "static/css/main.333a2211.chunk.css.map": "/static/css/main.333a2211.chunk.css.map",
-    "static/js/2.5c0deabf.chunk.js.LICENSE.txt": "/static/js/2.5c0deabf.chunk.js.LICENSE.txt",
-    "static/media/arrow.5ef52744.svg": "/static/media/arrow.5ef52744.svg",
-    "static/media/cadre.6fda98eb.png": "/static/media/cadre.6fda98eb.png",
-    "static/media/mac.75c608a9.jpg": "/static/media/mac.75c608a9.jpg"
+    "main.css": "/macron-netflix/static/css/main.333a2211.chunk.css",
+    "main.js": "/macron-netflix/static/js/main.ed832d06.chunk.js",
+    "main.js.map": "/macron-netflix/static/js/main.ed832d06.chunk.js.map",
+    "runtime-main.js": "/macron-netflix/static/js/runtime-main.f1c62acf.js",
+    "runtime-main.js.map": "/macron-netflix/static/js/runtime-main.f1c62acf.js.map",
+    "static/js/2.57482046.chunk.js": "/macron-netflix/static/js/2.57482046.chunk.js",
+    "static/js/2.57482046.chunk.js.map": "/macron-netflix/static/js/2.57482046.chunk.js.map",
+    "static/js/3.9b752e82.chunk.js": "/macron-netflix/static/js/3.9b752e82.chunk.js",
+    "static/js/3.9b752e82.chunk.js.map": "/macron-netflix/static/js/3.9b752e82.chunk.js.map",
+    "index.html": "/macron-netflix/index.html",
+    "static/css/main.333a2211.chunk.css.map": "/macron-netflix/static/css/main.333a2211.chunk.css.map",
+    "static/js/2.57482046.chunk.js.LICENSE.txt": "/macron-netflix/static/js/2.57482046.chunk.js.LICENSE.txt",
+    "static/media/arrow.5ef52744.svg": "/macron-netflix/static/media/arrow.5ef52744.svg",
+    "static/media/cadre.6fda98eb.png": "/macron-netflix/static/media/cadre.6fda98eb.png",
+    "static/media/mac.75c608a9.jpg": "/macron-netflix/static/media/mac.75c608a9.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.659fe3a9.js",
-    "static/js/2.5c0deabf.chunk.js",
+    "static/js/runtime-main.f1c62acf.js",
+    "static/js/2.57482046.chunk.js",
     "static/css/main.333a2211.chunk.css",
-    "static/js/main.a6a474df.chunk.js"
+    "static/js/main.ed832d06.chunk.js"
   ]
 }
