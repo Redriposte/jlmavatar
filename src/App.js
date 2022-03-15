@@ -1,41 +1,40 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Image as KonvaImage, Layer, Stage, Text as KonvaText } from "react-konva";
-import Dropzone from "react-dropzone";
-import useImage from "use-image";
+import React, { useState, useRef } from "react";
+import { Image as KonvaImage, Layer, Stage } from "react-konva";
 
-import arrowSVG from "../src/assets/img/arrow.svg";
-import cadre from "../src/assets/img/cadre.png";
-import mac from "../src/assets/img/mac.jpg";
+import badge1 from '../src/assets/img/badge1.png';
+import badge2 from '../src/assets/img/badge2.png';
 
 
 export default function App() {
-  const sceneSize = { x: 828 / 2, y: 1259 / 2 };
-  let [cadreimg] = useImage(cadre);
-  let [macimg] = useImage(mac);
-
+  const sceneSize = { x: 400, y: 400 };
   let [image, setImage] = useState(null);
-  let [text, setText] = useState("des cons");
-  let [text2, setText2] = useState("vivement la fin de la saison");
-
-  let [color] = useState("#e2001a");
-  let [imageProps, setImageProps] = useState({ x: 0, y: 0, w: 828 / 2, h: 1259 / 2 });
-  let [imageScale] = useState(1);
-
-  let [hideStage] = useState(true);
+  let [text, setText] = useState("JLMelenchon");
+  let [imageProps, setImageProps] = useState({ x: 0, y: 0, w: 400, h: 400 });
   let [loading, setLoading] = useState(false);
   let [uri, setUri] = useState(null);
   let [showGenerate, setShowGenerate] = useState(true);
-  let [strokeColor] = useState("#000000");
-  let [imageText, setImageText] = useState("Choisir une image");
   const stageRef = useRef(null);
+  let [template, setTemplate] = useState(null);
 
-  useEffect(() => {
-    generateImage(new Blob([mac]));
-  }, [])
+  function getTwitterPP(username) {
+    fetch(`https://justcors.com/tl_79c52e0/https://api.twitter.com/2/users/by/username/${username}?user.fields=profile_image_url`, {
+      method: 'get',
+      headers: new Headers({
+          'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAALITaQEAAAAAo1VJiuik%2FqXwlj6inhDKHNwS7Qg%3DIb545XzbaPdAb9ElBXCrv4bHdq9JbxyT2LW2QMyM5RbiEQS2n2',
+          'Content-Type': 'application/json',
+          'mode': 'no-cors'
+      })
+    })
+    .then(res => res.json())
+    .then(async data => {
+      const bb = await fetch(data.data.profile_image_url.replace('_normal', "")).then(r => r.blob())
+      generateImage( bb, setImage )
+    })
+  }
 
-  const fileDrop = (acceptedFiles) => {
-    generateImage(acceptedFiles[0]);
-  };
+  // useEffect(() => {
+  //   generateImage(new Blob([mac]));
+  // }, [])
 
   const calculateAspectRatioFit = (srcWidth, srcHeight, maxWidth, maxHeight) => {
     var ratio = Math.max(maxWidth / srcWidth, maxHeight / srcHeight);
@@ -43,24 +42,23 @@ export default function App() {
     return { width: srcWidth * ratio, height: srcHeight * ratio };
   };
 
-  const generateImage = (file) => {
-    setImageText(file.name);
-    setShowGenerate(true);
+  const generateImage = (file, cb) => {
+    //setShowGenerate(true);
     const reader = new FileReader();
     reader.onload = function (e) {
       let img = new window.Image();
       img.src = e.target.result;
 
       img.onload = function () {
-        const imgR = calculateAspectRatioFit(img.naturalWidth, img.naturalHeight, 500, 500);
+        const imgR = calculateAspectRatioFit(img.naturalWidth, img.naturalHeight, 400, 400);
 
         setImageProps({
-          x: sceneSize.x / 2 - imgR.width / 2,
-          y: sceneSize.y / 2 - imgR.height / 2,
+          x: 0,
+          y: 0,
           w: imgR.width,
           h: imgR.height,
         });
-        setImage(img);
+        cb(img);
       };
     };
     reader.readAsDataURL(file);
@@ -71,92 +69,80 @@ export default function App() {
     setText((s) => (s = e.target.value));
   };
 
-  const handleKeyDown2 = (e) => {
-    setShowGenerate(true);
-    setText2((s) => (s = e.target.value));
-  };
-
-
   const handleExport = () => {
-
     setTimeout(() => {
       setUri(uri);
-      downloadURI(uri, "macron-netflix.png");
+      downloadURI(uri, "jlm-avatar.png");
     }, 100);
   };
 
   function downloadURI(uri, name) {
-    var link = document.createElement("a");
-    link.download = name;
-    link.href = uri;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-  }
-
-  function handleGenerate() {
-    setLoading(s => s = true);
     setTimeout(() => {
       setShowGenerate(s => s = false);
       setLoading(s => s = false);
       //setHideStage(s => s = false);
       const uri = stageRef.current.toDataURL();
       setUri(uri);
-    }, 1200 + (Math.random() * 1000));
+
+      var link = document.createElement("a");
+      link.download = name;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }, 10);
+
+
+
+  }
+
+  function handleGenerate() {
+    setLoading(s => s = true);
+    getTwitterPP(text);
+  }
+
+  async function selectTemplate(selectedTemplate) {
+    const bb = await fetch(selectedTemplate).then(r => r.blob())
+    generateImage( bb, setTemplate );
   }
 
   return (
     <div className="app">
       <header>
-        <h1>MACRON NETFLIX</h1>
+        <h1>JLM AVATAR</h1>
       </header>
 
       <div className="imp">
         <label htmlFor="input-text">
-          <span className="input-text-label">Titre du film</span>
+          <span className="input-text-label">Pseudo twitter</span>
           <input
             id="input-text"
             className="input-text"
             type="text"
-            placeholder="Macron, président des riches"
+            placeholder="@username"
             value={text}
             onChange={handleKeyDown}
           />
         </label>
       </div>
 
-      <div className="imp">
-        <label htmlFor="input-text">
-          <span className="input-text-label">Sous-titre du film</span>
-          <input
-            id="input-text2"
-            className="input-text"
-            type="text"
-            placeholder="Macr"
-            value={text2}
-            onChange={handleKeyDown2}
-          />
-        </label>
-      </div>
-
-      {/* <div className="imp">
-        <span className="input-text-label">Charger votre image</span>
-        <Dropzone onDrop={fileDrop}>
-          {({ getRootProps, getInputProps }) => (
-            <section>
-              <div {...getRootProps({ className: "dropzone" })}>
-                <input {...getInputProps()} />
-                <p>{imageText}</p>
-              </div>
-            </section>
-          )}
-        </Dropzone>
-      </div> */}
-
       <div className={`generer-c ${showGenerate ? "show" : "hidden"} ${loading ? "isloading" : ""}`}>
-        <button onClick={handleGenerate} className="generer">Générer</button>
+        <button onClick={handleGenerate} className="generer">Charger</button>
       </div>
+
+      <h4>Liste templates</h4>
+      <ul>
+        <li className="list" onClick={() => selectTemplate(badge1)}>
+        <img className="fit-picture"
+     src={badge1}
+     alt="Grapefruit slice atop a pile of other slices" />
+        </li>
+        <li className="list" onClick={() => selectTemplate(badge2)}>
+        <img className="fit-picture"
+     src={badge2}
+     alt="Grapefruit slice atop a pile of other slices" />
+        </li>
+      </ul>
 
       <div className={loading ? "show generer-c" : "hidden generer-c"}>
         <div className="LoaderBalls">
@@ -166,64 +152,38 @@ export default function App() {
         </div>
       </div>
 
-      <main className={hideStage ? "hidden" : "show"}>
+      <main>
         <div className="stage" style={{ position: "relative" }}>
           <Stage
 
           width={sceneSize.x} height={sceneSize.y} ref={stageRef}>
             <Layer>
               <KonvaImage
-                // draggable
-                image={macimg}
-                scaleX={imageScale}
-                scaleY={imageScale}
+                image={image}
                 x={imageProps.x}
                 y={imageProps.y}
                 width={imageProps.w}
                 height={imageProps.h}
               />
-              <KonvaText
-                x={-20}
-                y={165}
-                text={text.toUpperCase()}
-                align="center"
-                fontSize={45}
-                fontFamily="arial black"
-
-                fill={color}
-                width={450}
-                // draggable
-              />
-              <KonvaText
-                x={80}
-                y={420}
-                text={text2.toUpperCase()}
-                align="center"
-                fontSize={25}
-                fontFamily="arial"
-                fill={"#fff"}
-                width={250}
-                // draggable
-              />
             </Layer>
 
-            {/* <Layer>
-              <KonvaImage x={0} y={0} image={cadreimg} />
-            </Layer> */}
-          </Stage>
-
-          {/* <Stage
-          className="canvas responsive-canvas"
-          width={sceneSize.x} height={sceneSize.y} style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}>
             <Layer>
-              <KonvaImage x={0} y={0} image={cadreimg} />
+              <KonvaImage
+                image={template}
+                x={imageProps.x}
+                y={imageProps.y}
+                width={imageProps.w}
+                height={imageProps.h}
+              />
             </Layer>
-          </Stage> */}
+          </Stage>
         </div>
       </main>
 
+
+
       <footer className={`${!showGenerate ? "show" : "hidden"}`}>
-        { uri ? <img src={uri} alt=""/> : "" }
+        {/* { uri ? <img src={uri} alt=""/> : "" } */}
         <button className="export"  onClick={handleExport}>Enregistrer</button>
 
       </footer>
