@@ -1,23 +1,33 @@
 import React, { useState, useRef } from "react";
 import { Image as KonvaImage, Layer, Stage } from "react-konva";
+import toast, { Toaster } from 'react-hot-toast';
+import Preview from './components/Preview';
 
 import badge1 from '../src/assets/img/badge1.png';
 import badge2 from '../src/assets/img/badge2.png';
-
+import badge3 from '../src/assets/img/badge3.png';
+import badge4 from '../src/assets/img/badge4.png';
+import empty from '../src/assets/img/empty.png';
 
 export default function App() {
   const sceneSize = { x: 400, y: 400 };
   let [image, setImage] = useState(null);
-  let [text, setText] = useState("JLMelenchon");
+  let [text, setText] = useState("");
   let [imageProps, setImageProps] = useState({ x: 0, y: 0, w: 400, h: 400 });
   let [loading, setLoading] = useState(false);
   let [uri, setUri] = useState(null);
-  let [showGenerate, setShowGenerate] = useState(true);
+  const selectedUsername = useRef("");
+  let [showGenerate, setShowGenerate] = useState(false);
   const stageRef = useRef(null);
   let [template, setTemplate] = useState(null);
 
   function getTwitterPP(username) {
-    fetch(`https://justcors.com/tl_244a83b/https://api.twitter.com/2/users/by/username/${username}?user.fields=profile_image_url`, {
+    if(username === '') {
+      toast('Tchouff, tu as oublié ton pseudo');
+      return;
+    };
+    setLoading(true);
+    fetch(`https://justcors.com/l_e7vo5b3wv0i/https://api.twitter.com/2/users/by/username/${username}?user.fields=profile_image_url`, {
       method: 'get',
       headers: new Headers({
           'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAALITaQEAAAAAo1VJiuik%2FqXwlj6inhDKHNwS7Qg%3DIb545XzbaPdAb9ElBXCrv4bHdq9JbxyT2LW2QMyM5RbiEQS2n2',
@@ -27,14 +37,17 @@ export default function App() {
     })
     .then(res => res.json())
     .then(async data => {
+      selectedUsername.current = username;
       const bb = await fetch(data.data.profile_image_url.replace('_normal', "")).then(r => r.blob())
-      generateImage( bb, setImage )
+      setLoading(false);
+      generateImage( bb, setImage );
+      setShowGenerate(true);
+    })
+    .catch(e => {
+      toast.error('Compte introuvable ou erroné');
+      setLoading(false);
     })
   }
-
-  // useEffect(() => {
-  //   generateImage(new Blob([mac]));
-  // }, [])
 
   const calculateAspectRatioFit = (srcWidth, srcHeight, maxWidth, maxHeight) => {
     var ratio = Math.max(maxWidth / srcWidth, maxHeight / srcHeight);
@@ -43,7 +56,6 @@ export default function App() {
   };
 
   const generateImage = (file, cb) => {
-    //setShowGenerate(true);
     const reader = new FileReader();
     reader.onload = function (e) {
       let img = new window.Image();
@@ -65,7 +77,7 @@ export default function App() {
   };
 
   const handleKeyDown = (e) => {
-    setShowGenerate(true);
+    setShowGenerate(false);
     setText((s) => (s = e.target.value));
   };
 
@@ -91,102 +103,106 @@ export default function App() {
       link.click();
       document.body.removeChild(link);
     }, 10);
-
-
-
   }
 
   function handleGenerate() {
-    setLoading(s => s = true);
-    getTwitterPP(text);
+    if(text === '') {
+      return toast('Tchouff, tu as oublié ton pseudo');
+    }
+    if(selectedUsername.current !== text) {
+      getTwitterPP(text);
+    }
   }
 
   async function selectTemplate(selectedTemplate) {
     const bb = await fetch(selectedTemplate).then(r => r.blob())
     generateImage( bb, setTemplate );
+    handleGenerate();
   }
 
   return (
-    <div className="app">
-      <header>
-        <h1>JLM AVATAR</h1>
-      </header>
+    <main className="container app">
+      <div className="row align-items-center">
+        <div className="col-md-6 text-md-start text-center py-6 col-left">
+          <h1 className="mb-4 fs-9 fw-bold"><span className="violet">Génère</span> <span className="red">ta photo twitter</span></h1>
+          <Preview />
+          <p className="mb-4 lh-2 lead text-secondary">
+            Mélenchonise ta photo twitter
+            et montre que tu vas voter pour le
+            programme <span className="violet">L</span>'<span className="violet">A</span>venir <span className="violet">E</span>n <span className="violet">C</span>ommun.</p>
+          <div className="text-center text-md-start">
+          <div className="input-group mb-3">
+              <span className="input-group-text" id="basic-addon1">@</span>
+              <input
+              id="input-text"
+              className="input-text form-control"
+              type="text"
+              placeholder="JLMelenchon"
+              value={text}
+              onChange={handleKeyDown}
+             />
+            </div>
+            <div className="badges mb-3">
+              <ul>
+                <li onClick={() => selectTemplate(badge1)} >
+                  <img src={badge1} alt='img' className="fit-picture" />
+                </li>
+                <li onClick={() => selectTemplate(badge2)} >
+                  <img src={badge2} alt='img' className="fit-picture" />
+                </li>
+                <li onClick={() => selectTemplate(badge3)} >
+                  <img src={badge3} alt='img' className="fit-picture" />
+                </li>
+                <li onClick={() => selectTemplate(badge4)} >
+                  <img src={badge4} alt='img' className="fit-picture" />
+                </li>
+              </ul>
+            </div>
+            {
+              loading && (
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )
+            }
+            <div className="text-right">
+              <button className={`btn me-3 btn-lg export ${showGenerate ? "show" : "hidden"}`} onClick={handleExport}>Enregistrer</button>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6 text-center m-auto col-right">
+          <main>
+          {template === null ? (<img  src={empty} alt="consigne" />) :
 
-      <div className="imp">
-        <label htmlFor="input-text">
-          <span className="input-text-label">Pseudo twitter</span>
-          <input
-            id="input-text"
-            className="input-text"
-            type="text"
-            placeholder="@username"
-            value={text}
-            onChange={handleKeyDown}
-          />
-        </label>
-      </div>
+            (<div className="stage" style={{ position: "relative" }}>
+              <Stage width={sceneSize.x} height={sceneSize.y} ref={stageRef} style={{borderRadius: '50%', overflow: 'hidden', width: '400px', margin: 'auto'}}>
+                <Layer>
+                  <KonvaImage
+                    image={image}
+                    x={imageProps.x}
+                    y={imageProps.y}
+                    width={imageProps.w}
+                    height={imageProps.h}
+                  />
+                </Layer>
 
-      <div className={`generer-c ${showGenerate ? "show" : "hidden"} ${loading ? "isloading" : ""}`}>
-        <button onClick={handleGenerate} className="generer">Charger</button>
-      </div>
-
-      <h4>Liste templates</h4>
-      <ul>
-        <li className="list" onClick={() => selectTemplate(badge1)}>
-        <img className="fit-picture"
-     src={badge1}
-     alt="Grapefruit slice atop a pile of other slices" />
-        </li>
-        <li className="list" onClick={() => selectTemplate(badge2)}>
-        <img className="fit-picture"
-     src={badge2}
-     alt="Grapefruit slice atop a pile of other slices" />
-        </li>
-      </ul>
-
-      <div className={loading ? "show generer-c" : "hidden generer-c"}>
-        <div className="LoaderBalls">
-          <div className="LoaderBalls__item"></div>
-          <div className="LoaderBalls__item"></div>
-          <div className="LoaderBalls__item"></div>
+                <Layer>
+                  <KonvaImage
+                    image={template}
+                    x={imageProps.x}
+                    y={imageProps.y}
+                    width={imageProps.w}
+                    height={imageProps.h}
+                  />
+                </Layer>
+              </Stage>
+            </div>)
+            }
+          </main>
         </div>
       </div>
 
-      <main>
-        <div className="stage" style={{ position: "relative" }}>
-          <Stage
-
-          width={sceneSize.x} height={sceneSize.y} ref={stageRef}>
-            <Layer>
-              <KonvaImage
-                image={image}
-                x={imageProps.x}
-                y={imageProps.y}
-                width={imageProps.w}
-                height={imageProps.h}
-              />
-            </Layer>
-
-            <Layer>
-              <KonvaImage
-                image={template}
-                x={imageProps.x}
-                y={imageProps.y}
-                width={imageProps.w}
-                height={imageProps.h}
-              />
-            </Layer>
-          </Stage>
-        </div>
-      </main>
-
-
-
-      <footer className={`${!showGenerate ? "show" : "hidden"}`}>
-        {/* { uri ? <img src={uri} alt=""/> : "" } */}
-        <button className="export"  onClick={handleExport}>Enregistrer</button>
-
-      </footer>
-    </div>
-  );
+      <Toaster/>
+    </main>
+  )
 }
