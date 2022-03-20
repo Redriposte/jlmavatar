@@ -27,7 +27,7 @@ export default function App() {
       return;
     };
     setLoading(true);
-    fetch(`https://justcors.com/tl_8e629c6/https://api.twitter.com/2/users/by/username/${username}?user.fields=profile_image_url`, {
+    fetch(`https://justcors.com/l_e7vo5b3wv0i/https://api.twitter.com/2/users/by/username/${username}?user.fields=profile_image_url`, {
       method: 'get',
       headers: new Headers({
           'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAALITaQEAAAAAo1VJiuik%2FqXwlj6inhDKHNwS7Qg%3DIb545XzbaPdAb9ElBXCrv4bHdq9JbxyT2LW2QMyM5RbiEQS2n2',
