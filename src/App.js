@@ -90,8 +90,6 @@ export default function App() {
 
   function downloadURI(uri, name) {
     setTimeout(() => {
-      setShowGenerate(s => s = false);
-      setLoading(s => s = false);
       //setHideStage(s => s = false);
       const uri = stageRef.current.toDataURL();
       setUri(uri);
