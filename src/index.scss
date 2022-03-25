@@ -200,6 +200,7 @@ h1 {
   ul {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
   }
   ul > li {
     border-radius: 10px;
