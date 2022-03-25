@@ -7,6 +7,9 @@ import badge1 from '../src/assets/img/badge1.png';
 import badge2 from '../src/assets/img/badge2.png';
 import badge3 from '../src/assets/img/badge3.png';
 import badge4 from '../src/assets/img/badge4.png';
+import badge5 from '../src/assets/img/badge5.png';
+import badge6 from '../src/assets/img/badge6.png';
+
 import empty from '../src/assets/img/empty.png';
 
 export default function App() {
@@ -153,6 +156,12 @@ export default function App() {
                 </li>
                 <li onClick={() => selectTemplate(badge4)} >
                   <img src={badge4} alt='img' className="fit-picture" />
+                </li>
+                <li onClick={() => selectTemplate(badge5)} >
+                  <img src={badge5} alt='img' className="fit-picture" />
+                </li>
+                <li onClick={() => selectTemplate(badge6)} >
+                  <img src={badge6} alt='img' className="fit-picture" />
                 </li>
               </ul>
             </div>
